@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="Scripts/jquery-1.9.1.min.js"></script>
+    <script src="Scripts/jquery.mobile-1.4.4.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script src="gmcScripts/resource.js"></script>
+    <script src="gmcScripts/Common.js"></script>
+    <script src="gmcScripts/Main.js"></script>
+    <link href="css/jquery.mobile.flatui.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    
+</head>
+
+<body>
+   
+    <div data-role="page" id="pageMain" data-theme="f">
+        <div data-role="header" data-position="fixed" id="aHeader" data-tap-toggle="false">
+            <a href="#popupCategory" data-rel="popup" data-position-to="#aCategory" data-transition="pop" data-role="none" style="margin-top: 8px; margin-left:3px;" id="aCategory"><img src="Images/category.png"></a>
+            <h2 id="pageMain_aTitle">Customer</h2>
+            <a href="#panelMenu" id="pageMain_btnTopRight" data-role="none" data-iconpos="notext" data-transition="slide" style="margin-top: 9px; margin-right:3px;"><img src="Images/iconfont-caidan.png"></a>
+        </div>
+
+        <!-- /header -->
+        <div id="contentDiv">
+            <div id="map_canvas"></div>
+            <div id='slider' class='swipe'>
+                <div class='swipe-wrap' style="height:75px;">
+                    <div style="text-align:center">
+                        <div style="font-weight:bold">Title</div>
+                        <div id="pageNewComment_divComm" data-count="0">
+                            <img src="Images/iconfont-wujiaoxingYellow.png" style="width:16px;" />
+                            <img src="Images/iconfont-wujiaoxingYellow.png" style="width:16px;" />
+                            <img src="Images/iconfont-wujiaoxingYellow.png" style="width:16px;" />
+                            <img src="Images/iconfont-wujiaoxingYellow.png" style="width:16px;" />
+                            <img src="Images/iconfont-wujiaoxing.png" style="width:16px;" />
+                        </div>
+                        <span class="clear">10 secs - 3km</span>
+                    </div>
+                    <div style="text-align:center">
+                        <div style="font-weight:bold">Title</div>
+                        <div>decription</div>
+                        <span class="clear">test</span>
+                    </div>
+                </div>
+                <nav id="nav_Index" style="margin-top:-22px">
+                    <ul id="position" class="position">
+                        <li class="on"></li>
+                        <li class=""></li>
+                    </ul>
+                </nav>
+            </div>
+            <div data-role="panel" id="panelMenu" style="border:none!important" data-position="right" data-theme="a" data-display="overlay" class="ui-responsive-panel">
+                <ul class="c_Tax-to-Pacific1" style=" height: 100px; margin: 0px; padding: 0px;">
+                    <li>
+                        <img src="Images/iconfont-twitter.png" style="height: 100px; width: 100px;">
+                    </li>
+                </ul>
+
+                <ul data-role="listview" data-theme="c" data-inset="false">
+                    <li data-icon="false">
+                        <a style="text-align: center;background-color: #FFFFFF; ">Settings</a>
+                    </li>
+                    <li data-icon="false">
+                        <a href="#" data-rel="dialog" style="text-align: center;background-color: #FFFFFF;">About us</a>
+                    </li>
+                    <li data-icon="false">
+                        <a href="#" data-rel="dialog" style="text-align: center;background-color: #FFFFFF; ">Terms&Privacy</a>
+                    </li>
+                    <li style="height: 100px;"></li>
+                    <li data-icon="false">
+                        <a href="#" data-rel="dialog" style="text-align: center;background-color: #FFFFFF; color: red;">Sign out</a>
+                    </li>
+                </ul>
+
+            </div>
+            <div data-role="popup" id="popupCategory" style="border:none!important" data-dismissible="false" data-overlay-theme="f" class="ui-mini">
+
+            </div>
+            <div style="position: absolute; top: 10px; left: 8px; z-index: 9999; display: none" id="divCategoryImg"><img src="Images/category.png"></div>
+            <div style="position: absolute; top: 12px; right: 8px; z-index: 9999; display: none" id="divMenuImg"><img src="Images/iconfont-caidan.png"></div>
+        </div>
+        
+        <!-- /content -->
+        <div data-role="footer" data-position="fixed" id="standardFooter" data-footer-select="0" data-theme="none" data-tap-toggle="false" style="border-top:solid 1px #ddd">
+            <div style="text-align: center;">
+                <img src="Images/iconfont-qipao.png">
+                <span style="display:block; z-index:9999; position:absolute; top:1px; right:43%; width: 10px; height:10px; background-color: red; border-radius:50%"></span>
+            </div>
+        </div>
+        <!-- /footer -->
+        <script src="Scripts/Swipe.js"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=places"></script>
+        <script src="Scripts/jquery.ui.map.full.min.js"></script>
+        <script src="Scripts/jquery.ui.map.services.min.js"></script>
+        
+        <script type="text/javascript">
+            var mySwipe;
+            var mobileDemo = { 'center': '39.917456,116.40167', 'zoom': 14 };
+            $(document).on("pageinit", "#pageMain", function (event, ui) {
+                var headerHeight = 42;
+                var footHeight = 36;
+                var informationHeight = 75;
+                var positionHeight = 2;
+                var pageHeight = document.body.clientHeight;
+                var fixedHeight = headerHeight + footHeight + informationHeight + positionHeight;
+                $("#map_canvas").css("height", pageHeight - fixedHeight);
+
+                mySwipe = new Swipe(document.getElementById('slider'), {
+                    startSlide: 0,
+                    speed: 400,
+                    auto: 0,
+                    continuous: true,
+                    disableScroll: false,
+                    stopPropagation: false,
+                    callback: function (index, elem) {
+                        var i = bullets.length;
+                        if (i > 1) {
+                            while (i--) {
+                                bullets[i].className = ' ';
+                            }
+                            bullets[index].className = 'on';
+                        }
+                    },
+                    transitionEnd: function (index, elem) { }
+                });
+
+                var bullets = document.getElementById('position').getElementsByTagName('li');
+
+                Ajax.getJson("GetCategories", {}, function (data) {
+                    if (data.IsSuccess) {
+                        var categroy = data.Data;
+                        for (var i = 0; i < categroy.length; i++) {
+                            var theme = "c";
+                            if (localStorage.getItem("category") != null && localStorage.getItem("category") == categroy[i].CategorieName) {
+                                theme = "f";
+                            }
+                            var btn = "<a href=\"\" data-role=\"button\" data-theme='" + theme + "'>" + categroy[i].CategorieName + "</a>";
+                            //btn.button("refresh");
+                            $("#popupCategory").append(btn).trigger('create');
+                        }
+
+                        $("#popupCategory a").on("click", function () {
+                            localStorage.setItem("category", $(this).text());
+                            $("#popupCategory a").removeClass("ui-btn-f").addClass("ui-btn-c");
+                            $(this).removeClass("ui-btn-c").addClass("ui-btn-f");
+                            $("#popupCategory").popup("close");
+                            $("#aCategory img").removeClass("aCategory").addClass("aCategory1");
+                        });
+                    }
+                });
+
+                var image = 'Images/marker.png';
+                window.setTimeout(function () {
+                    $('#map_canvas').gmap({
+                        'center': mobileDemo.center, 'zoom': mobileDemo.zoom, 'disableDefaultUI': true, 'callback': function () {
+                            var self = this;
+                            //this.get('map').getCenter()
+                            self.addMarker({ 'position': mobileDemo.center, title: 'JeFactoria',"data":"11" }).click(function () {
+                                console.log(this)
+                                self.openInfoWindow({ 'content': '<a href="">Message</a><a href="">Image</a><a href="">Voice</a>' }, this);
+                            });
+                            self.addMarker({ 'position': "39.915623,116.404413", 'icon': image }).click(function () {
+                                self.openInfoWindow({ 'content': '<a href="">Message</a><a href="">Image</a><a href="">Voice</a>' }, this);
+                            });
+
+                            self.addMarker({ 'position': "39.92956,116.396849", 'icon': image }).click(function () {
+                                self.openInfoWindow({ 'content': '<a href="">Message</a><a href="">Image</a><a href="">Voice</a>' }, this);
+                            });
+                        }
+                    });
+                    $('#map_canvas').gmap('refresh');
+
+                    var origin1 = new google.maps.LatLng(55.930385, -3.118425);
+                    var origin2 = new google.maps.LatLng(55.930385, -3.118425);
+                    var destinationA = new google.maps.LatLng(50.087692, 14.421150);
+                    var destinationB = new google.maps.LatLng(50.087692, 14.421150);
+
+                    var service = new google.maps.DistanceMatrixService();
+                    service.getDistanceMatrix(
+                      {
+                          origins: [origin1, origin2],
+                          destinations: [destinationA, destinationB],
+                          travelMode: google.maps.TravelMode.DRIVING,
+                          avoidHighways: false,
+                          avoidTolls: false
+                      }, callback);
+
+                    function callback(response, status) {
+                        alert(response.rows[0].elements[0].duration.text)
+                    }
+                }, 0);
+            });
+            //https://developers.google.com/maps/documentation/javascript/distancematrix?hl=zh-CN
+
+            $(document).on("pageshow", "#pageMain", function (event, ui) {
+                if (mySwipe) {
+                    mySwipe.setup();
+                }
+
+                showBubbleOnTA();
+
+                $("#aCategory img").on("click", function () {
+                    if ($(this).hasClass("aCategory")) {
+                        $(this).removeClass("aCategory").addClass("aCategory1");
+
+                    } else {
+                        $(this).removeClass("aCategory1").addClass("aCategory");
+                    }
+                });
+
+                var firstName = localStorage.getItem("firstName");
+                var lastName = localStorage.getItem("lastName");
+
+                if(firstName && lastName)
+                {
+                    $("#pageMain_aTitle").text(firstName + " " + lastName);
+                }
+            });
+        </script>
+        <!-- /footer -->
+
+    </div>
+
+</body>
+
+</html>

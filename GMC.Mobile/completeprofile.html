@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="Scripts/jquery-1.9.1.min.js"></script>
+		<script src="Scripts/jquery.mobile-1.4.4.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+		<script src="gmcScripts/resource.js"></script>
+		<script src="gmcScripts/Common.js"></script>
+		<script src="gmcScripts/Main.js"></script>
+		<link href="css/jquery.mobile.flatui.css" rel="stylesheet" />
+		<link href="css/main.css" rel="stylesheet" />
+	</head>
+
+	<body>
+        <div data-role="page" id="pageCompleteProfile" class="c_Iris-to-Pacific" data-theme="a">
+
+            <div class="ui-content">
+
+                <div class="ui-grid-b">
+                    <div class="ui-block-a" style="width: 30%;">
+                        <hr>
+                    </div>
+                    <div class="ui-block-b c_WhiteLabel" style="text-align: center;width: 40%;">complete profile</div>
+                    <div class="ui-block-c" style="width: 30%;">
+                        <hr>
+                    </div>
+                </div><br />
+                <div style="text-align: center;"><img src="Images/logo.png" style="width:80px;" /></div>
+
+                <div id="pageLogin_tabReg">
+                    <div>
+                        <label class="c_WhiteLabel">First Name</label>
+                        <input data-theme="a" type="text" id="pageCompleteProfile_txtFirstName" class="form-control" placeholder="Enter your first name">
+                    </div>
+                    <div>
+                        <label class="c_WhiteLabel">Last Name</label>
+                        <input data-theme="a" type="text" id="pageCompleteProfile_txtLastName" class="form-control" placeholder="Enter your last name">
+                    </div>
+
+                    <div class="ui-grid-a">
+                        <div class="ui-block-a">
+                            <label class="c_WhiteLabel">Gender</label>
+                            <div data-role="navbar" style="width:95%; margin-top:8px;">
+                                <ul style="background-color: #00acde; border-radius: 5px;" id="nav_gender">
+                                    <li><a id="pageCompleteProfile_male" href="#" class="ui-btn-active btnActive" style="border: none; border-bottom-right-radius: 0px; border-top-right-radius: 0px;">male</a></li>
+                                    <li><a id="pageCompleteProfile_female" href="#" class="ui-btn-active btnDeactive" style="border: none; border-bottom-left-radius: 0px; border-top-left-radius: 0px;">female</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ui-block-b">
+                            <label class="c_WhiteLabel">Date of Birth</label>
+                            <input data-theme="a" type="date" id="pageCompleteProfile_dateBirthday" placeholder="DD/MM/YYYY">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <label class="c_WhiteLabel">Post Code</label>
+                        <input data-theme="a" type="text" style="width:95%;" id="pageCompleteProfile_txtPostCode" placeholder="Enter postcode">
+                    </div>
+                    <div class="ui-block-b">
+                        <label class="c_WhiteLabel">State</label>
+                        <select name="pageCompleteProfile_selectState" id="pageCompleteProfile_selectState" class="ui-mini" data-theme="c">
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="c_WhiteLabel">Surburb</label>
+                    <textarea data-theme="a" id="pageCompleteProfile_Surburb" placeholder="Enter your surburb"></textarea>
+                </div>
+                <div class="ui-grid-a">
+                    <div class="ui-block-a">
+                        <a data-role="button" style="background-color: #ab5165; color: white; border: #ab5165; margin-left: 0px; border-radius:2px; z-index:9997" id="pageCompleteProfile_btnSkip">Skip</a>
+                    </div>
+                    <div class="ui-block-b">
+                        <a data-theme="a" href="" data-role="button" id="pageCompleteProfile_btnNext" class="ui-mini" style="margin-right: 0px; border-radius: 2px; border:0px">Next</a>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <script type="text/javascript">
+                $(document).on("pageinit", "#pageCompleteProfile", function (event, ui) {
+                    Ajax.getJson("GetStates", {}, function (data) {
+                        if (data.IsSuccess) {
+                            var res = data.Data;
+                            for (var i = 0; i < res.length; i++)
+                            {
+                                $("#pageCompleteProfile_selectState").append("<option value='" + res[i].Id + "'>"+res[i].StateName+"</option>");
+                            }
+
+                            $("#pageCompleteProfile_selectState").selectmenu("refresh");
+                        } else {
+                            Messagebox.popup("Load States error");
+                        }
+                    });
+
+                    $("#pageCompleteProfile_btnSkip").off("click").on("click", function () {
+                        if($("#coverDiv").css("display") == "block"){
+                            $("#coverDiv").hide();
+                        } else {
+                            changePage("main.html");
+                        }
+                    });
+
+                    $("#pageCompleteProfile_male").off("click").on("click", function () {
+                        if($(this).hasClass("btnDeactive"))
+                        {
+                            $(this).removeClass("btnDeactive").addClass("btnActive");
+                            $("#pageCompleteProfile_female").removeClass("btnActive").addClass("btnDeactive");
+                        }
+                    });
+
+                    $("#pageCompleteProfile_female").off("click").on("click", function () {
+                        if ($(this).hasClass("btnDeactive")) {
+                            $(this).removeClass("btnDeactive").addClass("btnActive");
+                            $("#pageCompleteProfile_male").removeClass("btnActive").addClass("btnDeactive");
+                        }
+                    });
+
+                    $("#pageCompleteProfile_btnNext").off("click").on("click", function () {
+                        var pageCompleteProfile_txtFirstName = $("#pageCompleteProfile_txtFirstName").val();
+                        var pageCompleteProfile_txtLastName = $("#pageCompleteProfile_txtLastName").val();
+                        var gender = $("#nav_gender a.btnActive").text();
+                        var pageCompleteProfile_dateBirthday = $("#pageCompleteProfile_dateBirthday").val();
+                        var pageCompleteProfile_txtPostCode = $("#pageCompleteProfile_txtPostCode").val();
+                        var pageCompleteProfile_selectState = $("#pageCompleteProfile_selectState").val();
+
+                        if (pageCompleteProfile_txtPostCode.length > 4) {
+                            Messagebox.popup("The postcode must be 4 bits");
+                            return;
+                        }
+
+                        Ajax.getJson("UpdateCustomProfile", { accountId: getCurrentAccountId(), lastName: pageCompleteProfile_txtLastName, firstName: pageCompleteProfile_txtFirstName, birthday: pageCompleteProfile_dateBirthday, postCode: pageCompleteProfile_txtPostCode }, function (data) {
+                            if(data.IsSuccess)
+                            {
+                                changePage("main.html");
+                            }
+                            else {
+                                Messagebox.popup(data.Message);
+                            }
+                        });
+                    });
+                    
+                });
+
+                $(document).on("pageshow", "#pageCompleteProfile", function (event, ui) {
+                    showBubble("Hi mate :)<br>You can do this anytime,<br>from settings.","gotcha", false, function () {
+                        
+                    });
+                });
+            </script>
+        </div>
+	</body>
+
+</html>
